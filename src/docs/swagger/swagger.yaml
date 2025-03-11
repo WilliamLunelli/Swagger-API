@@ -1,0 +1,147 @@
+# src/docs/swagger/swagger.yaml
+openapi: 3.0.0
+info:
+  title: API com Express e TypeScript
+  version: 1.0.0
+  description: Uma API REST simples com Express, TypeScript e documentação Swagger
+  contact:
+    name: Desenvolvedor
+servers:
+  - url: http://localhost:3000
+    description: Servidor de desenvolvimento
+
+# Componentes reutilizáveis
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - name
+        - email
+      properties:
+        id:
+          type: integer
+          description: ID do usuário
+        name:
+          type: string
+          description: Nome do usuário
+        email:
+          type: string
+          description: Email do usuário
+      example:
+        id: 1
+        name: João Silva
+        email: joao@email.com
+
+# Definição das rotas
+paths:
+  /api/users:
+    get:
+      summary: Retorna a lista de todos os usuários
+      tags:
+        - Users
+      responses:
+        200:
+          description: Lista de usuários
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+    post:
+      summary: Cria um novo usuário
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+      responses:
+        201:
+          description: Usuário criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        400:
+          description: Dados inválidos
+
+  /api/users/{id}:
+    get:
+      summary: Obtém um usuário pelo ID
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID do usuário
+      responses:
+        200:
+          description: Usuário encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        404:
+          description: Usuário não encontrado
+    put:
+      summary: Atualiza um usuário pelo ID
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID do usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+      responses:
+        200:
+          description: Usuário atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        404:
+          description: Usuário não encontrado
+    delete:
+      summary: Remove um usuário pelo ID
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID do usuário
+      responses:
+        200:
+          description: Usuário removido com sucesso
+        404:
+          description: Usuário não encontrado
